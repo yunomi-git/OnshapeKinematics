@@ -1,4 +1,5 @@
 import numpy as np
+import time
 
 from enum import Enum
 class Unit(Enum):
@@ -19,7 +20,11 @@ class KinematicsToolbox:
 
     # Inputs is a numpy array
     def calculateKinematics(self, inputs):
-        return self.kinematicsCalculator(inputs, self.inputUnits)
+        # tic = time.perf_counter()
+        output = self.kinematicsCalculator(inputs, self.inputUnits)
+        # toc = time.perf_counter()
+        # print("time " + str(toc - tic))
+        return output
 
     # Inputs and output is a numpy array
     def calculateJacobian(self, inputs, stepSizes):

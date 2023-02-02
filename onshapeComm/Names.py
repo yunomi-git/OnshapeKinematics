@@ -1,0 +1,4 @@
+KINEMATICS_ATTRIBUTE_NAME = "OutputKinematics"
+
+
+SAMPLES_ATTRIBUTE_NAME = "API Interface"

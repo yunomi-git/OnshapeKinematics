@@ -1,0 +1,3 @@
+[submodule "lib/optimization"]
+	path = lib/optimization
+	url = https://github.com/eeyu/Optimization.git

@@ -1,24 +1,12 @@
 import requests
 import json 
-from onshapeComm.APICallCreator import APICallCreator
+from onshapeComm.RequestUrlCreator import RequestUrlCreator
 from onshape_client.client import Client
 from onshape_client.onshape_url import OnshapeElement
 import time
+from onshapeComm.FeaturescriptPayloadCreator import FeaturescriptCreator
+import onshapeComm.Names as Names
 
-class FeaturescriptCreator:
-    def getOutputKinematics(self):
-        script = """
-        function (context is Context, queries is map) 
-        {
-            var instantiatedBodies = qHasAttribute(qEverything(EntityType.BODY), "OutputKinematics");
-    
-            // This is what we are looking for
-            var outputKinematics = getAttribute(context, {"entity" : instantiatedBodies, "name" : "OutputKinematics"});
-            return outputKinematics;
-        }
-        """
-        queries = []
-        return script, queries
 
 class ValueWithUnit:
     def __init__(self, value, unit):
@@ -40,12 +28,12 @@ class ConfigurationEncodingCreator:
         return encoding
 
 class OnshapeKinematicsAPI:
-    def __init__(self, accessKey, secretKey, documentID, workspaceID, elementID, numInputs):
+    def __init__(self, accessKey, secretKey, url, numInputs):
         base = 'https://cad.onshape.com'
         self.client = Client(configuration={"base_url": base,
                                     "access_key": accessKey,
                                     "secret_key": secretKey})
-        self.urlCreator = APICallCreator(documentID, workspaceID, elementID)
+        self.urlCreator = RequestUrlCreator(url)
 
         self.headers = {'Accept': 'application/vnd.onshape.v1+json; charset=UTF-8;qs=0.1',
                 'Content-Type': 'application/json'}
@@ -54,11 +42,10 @@ class OnshapeKinematicsAPI:
     # inputs is np array, unitsList is string array
     def getOutputKinematics(self, inputs, unitsList):
         # Setup the request
-        dataCreator = FeaturescriptCreator()
-        script, queries = dataCreator.getOutputKinematics()
+        script, queries = FeaturescriptCreator.getAttribute(Names.KINEMATICS_ATTRIBUTE_NAME)
         self.urlCreator.setRequest("featurescript")
         api_url = self.urlCreator.getURL()
-        
+
         inputsAsVWU = []
         for i in range(self.numInputs):
             inputsAsVWU.append(ValueWithUnit(inputs[i], unitsList[i]))

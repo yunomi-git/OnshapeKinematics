@@ -12,3 +12,6 @@ class Wrapper:
 caller = Caller()
 wrapper = Wrapper(caller.foo)
 wrapper.doIt()
+
+a = """hello: {name}""".format(name="a")
+print(a)
