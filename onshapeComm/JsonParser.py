@@ -8,6 +8,7 @@ class OnshapeType(Enum):
     BTFSValueWithUnits = 1817
     BTFSValueArray = 1499
     BTFSValueBoolean = 1195
+    BTFSValueNumber = 772
 
 
 class JsonToPython:
@@ -23,12 +24,14 @@ class JsonToPython:
             return JsonToPython.parseMap(value)
         elif (type == OnshapeType.BTFSValueArray.value):
             return JsonToPython.parseArray(value)
-        elif (type == OnshapeType.BTFSValueString.value):
-            return JsonToPython.parseString(value)
         elif (type == OnshapeType.BTFSValueWithUnits.value):
+            return JsonToPython.parseValueWithUnitsInSI(value)
+        elif (type == OnshapeType.BTFSValueString.value):
             return JsonToPython.parseString(value)
         elif (type == OnshapeType.BTFSValueBoolean.value):
             return JsonToPython.parseBoolean(value)
+        elif (type == OnshapeType.BTFSValueNumber.value):
+            return JsonToPython.parseNumber(value)
         else:
             print("JsonParser: unknown type parsed")
             print(type)
@@ -73,6 +76,14 @@ class JsonToPython:
 
         return ValueWithUnit(numericValue, unit)
 
+    def parseValueWithUnitsInSI(value):
+        valueSI = value["message"]["value"]
+
+        return valueSI
+
     def parseBoolean(value):
+        return value["message"]["value"]
+
+    def parseNumber(value):
         return value["message"]["value"]
 
