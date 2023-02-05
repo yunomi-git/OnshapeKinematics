@@ -1,11 +1,8 @@
-import requests
 import json
-from onshapeComm.RequestUrlCreator import RequestUrlCreator
 from onshape_client.client import Client
-from onshape_client.onshape_url import OnshapeElement
-from onshapeComm.FeaturescriptPayloadCreator import FeaturescriptCreator
-import time
 
+from onshapeComm.FeaturescriptPayloadCreator import FeaturescriptCreator
+from onshapeComm.JsonParser import JsonToPython
 from onshapeComm.ConfigurationEncoder import ConfigurationEncoder
 from onshapeComm.Keys import Keys
 from onshapeComm.RequestUrlCreator import RequestUrlCreator
@@ -30,7 +27,6 @@ class OnshapeAPI:
         # Configuration of the request
         config = configuration.getEncoding()
         params = {'configuration': config}
-        print(config)
 
         # Featurescript to extract attributes of request
         script, queries = FeaturescriptCreator.getAttribute(attributeName)
@@ -46,16 +42,11 @@ class OnshapeAPI:
                                                   headers=self.headers,
                                                   body=payload)
         parsed = json.loads(response.data)
+        # print(json.dumps(parsed, indent=4))
 
-        # # Interpret json response as python data structure
-        # numData = len(parsed["result"]["message"]["value"])
-        # output = []
-        # # unit = parsed["result"]["message"]["value"][0]["message"]["unitToPower"]
-        # for i in range(numData):
-        #     value = parsed["result"]["message"]["value"][i]["message"]["value"]
-        #     output.append(value)
+        conversion = JsonToPython.toPythonStructure(parsed)
 
-        return parsed
+        return conversion
 
 
 

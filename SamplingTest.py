@@ -26,12 +26,12 @@ parsed = onshapeAPI.doAPIRequestForJson(configurationEncoder, Names.SAMPLES_ATTR
 toc = time.perf_counter()
 print("time total " + str(toc - tic))
 
-conversion = JsonToPython.toPythonStructure(parsed)
+# conversion = JsonToPython.toPythonStructure(parsed)
 
-print(json.dumps(conversion, indent=2))
+print(json.dumps(parsed, indent=2))
 
-value = conversion["Hello"]["OutputKinematics"]
-print(value)
+# value = conversion["Hello"]["OutputKinematics"]
+# print(value)
 
 
 # print(json.dumps(parsed, indent=2))

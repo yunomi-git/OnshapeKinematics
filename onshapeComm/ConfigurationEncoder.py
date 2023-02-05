@@ -14,6 +14,9 @@ class ConfigurationEncoder:
     def __init__(self):
         self.encoding = ""
 
+    def clearEncoding(self):
+        self.encoding = ""
+
     def addConfiguration(self, name : str, value : ValueWithUnit):
         self.encoding += name + "="
         self.encoding += str(value.value) + " "
