@@ -42,7 +42,6 @@ class OnshapeAPI:
                                                   headers=self.headers,
                                                   body=payload)
         parsed = json.loads(response.data)
-        # print(json.dumps(parsed, indent=4))
 
         conversion = JsonToPython.toPythonStructure(parsed)
 

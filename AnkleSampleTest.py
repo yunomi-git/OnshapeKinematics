@@ -10,6 +10,7 @@ from onshapeComm.RequestUrlCreator import RequestUrlCreator
 import onshapeComm.Names as Names
 from onshapeComm.JsonParser import JsonToPython
 from ihmcAnkle.AnkleConfiguration import AnkleConfiguration
+from ihmcAnkle.AnkleCost import AnkleCostEvaluator, AnkleCosts
 
 access = 'I6M5WhNnlnrPeGGFucyKwlwa'
 secret = 'W9qbMjKaYzfBRbg8MPoAuP7sDICkLhlByVYLAT8cehiF4Gbv'
@@ -28,11 +29,14 @@ configuration.setNewConfiguration(globalX=ValueWithUnit(0.00, Units.METER),
                                  relativeZ=ValueWithUnit(0.00, Units.METER))
 
 tic = time.perf_counter()
-converted = onshapeAPI.doAPIRequestForJson(configuration, Names.SAMPLES_ATTRIBUTE_NAME)
+apiResponse = onshapeAPI.doAPIRequestForJson(configuration, Names.SAMPLES_ATTRIBUTE_NAME)
 toc = time.perf_counter()
 
-print(json.dumps(converted, indent=4))
+print(json.dumps(apiResponse, indent=4))
 print("time total " + str(toc - tic))
+
+costs = AnkleCostEvaluator.calculateCostFromOnshape(configuration, apiResponse)
+costs.print()
 
 # value = conversion["Position"]["Jacobian"]
 # print(value)
