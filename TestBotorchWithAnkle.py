@@ -27,7 +27,11 @@ weights = [0.2, 0.2, 0.2]
 def appendNewCost(costList, newCost):
     # costlist is 1xn tensor
     # newCost is scalar cost
-    tensorCost = torch.tensor([newCost]).double()
+    tensorCost = torch.tensor([[newCost]]).double()
+
+    if torch.numel(costList) == 0:
+        return tensorCost
+
     costList = torch.cat((costList, tensorCost), dim=0)
     return costList
 
@@ -40,9 +44,8 @@ def ankleTo1DCost(costs : AnkleCosts, weights):
     return oneDCost
 
 def costFunction(parameters):
-    # costs = costFunctionMultiD(parameters)
-    # oneDCost = ankleTo1DCost(costs, weights)
-    oneDCost = 1
+    costs = costFunctionMultiD(parameters)
+    oneDCost = ankleTo1DCost(costs, weights)
     return oneDCost
 
 def costFunctionMultiD(parameters):
@@ -73,9 +76,8 @@ train_X = ((2 * torch.rand(numStartingData, searchDims) - 1.0) * boundMag).doubl
 train_Y = torch.tensor([[]])
 for i in range(numStartingData):
     newY = costFunction(train_X[i])
-    print(newY)
-    print(train_Y)
     train_Y = appendNewCost(train_Y, newY)
+
 # train_Y = torch.reshape(train_Y, (numStartingData, 1))
 bounds = torch.stack([torch.ones(searchDims) * -boundMag, torch.ones(searchDims) * boundMag]).double()
 
@@ -100,7 +102,7 @@ for i in range(10):
 bestIndex = torch.argmax(train_Y)
 bestParam = train_X[bestIndex]
 bestCosts = costFunctionMultiD(bestParam)
-originalCosts = costFunctionMultiD([0,0,0,0,0,0])
+originalCosts = costFunctionMultiD(torch.tensor([0,0,0,0,0,0]))
 
 print("Best Costs:")
 bestCosts.print()

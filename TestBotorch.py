@@ -12,7 +12,8 @@ def costFunction(x):
 
 train_X = torch.rand(10, 2) - 0.5
 train_Y = costFunction(train_X)
-print(train_X.size())
+print(train_Y)
+print(train_Y.size())
 
 for i in range(10):
     gp = SingleTaskGP(train_X, train_Y)
@@ -28,6 +29,8 @@ for i in range(10):
 
     train_X = torch.cat((train_X, candidate))
     newY = costFunction(candidate)
+    print(newY)
+    print(newY.size())
     train_Y = torch.cat((train_Y, newY))
 
 plt.plot(train_X[:,0], train_X[:,1])
