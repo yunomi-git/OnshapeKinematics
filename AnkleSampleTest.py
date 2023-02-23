@@ -20,22 +20,22 @@ url = "https://cad.onshape.com/documents/6b351a18863dce94af4a4571/w/024504447ddc
 requestUrlCreator = RequestUrlCreator(url)
 onshapeAPI = OnshapeAPI(keys, requestUrlCreator)
 
-configuration = AnkleConfiguration()
-configuration.setNewConfiguration(globalX=ValueWithUnit(0.00, Units.METER),
+parameters = AnkleConfiguration()
+parameters.setNewConfiguration(globalX=ValueWithUnit(0.00, Units.METER),
                                  globalY=ValueWithUnit(0.0, Units.METER),
                                  globalZ=ValueWithUnit(0.00, Units.METER),
                                  relativeX=ValueWithUnit(0.00, Units.METER),
                                  relativeY=ValueWithUnit(0.00, Units.METER),
                                  relativeZ=ValueWithUnit(0.00, Units.METER))
 
-tic = time.perf_counter()
-apiResponse = onshapeAPI.doAPIRequestForJson(configuration, Names.SAMPLES_ATTRIBUTE_NAME)
-toc = time.perf_counter()
+# tic = time.perf_counter()
+apiResponse = onshapeAPI.doAPIRequestForJson(parameters, Names.SAMPLES_ATTRIBUTE_NAME)
+# toc = time.perf_counter()
 
 print(json.dumps(apiResponse, indent=4))
-print("time total " + str(toc - tic))
+# print("time total " + str(toc - tic))
 
-costs = AnkleCostEvaluator.calculateCostFromOnshape(configuration, apiResponse)
+costs = AnkleCostEvaluator.calculateCostFromOnshape(parameters, apiResponse)
 costs.print()
 
 # value = conversion["Position"]["Jacobian"]
