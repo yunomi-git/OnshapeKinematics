@@ -3,6 +3,7 @@ from mathUtil.kinematics import KinematicsToolbox, Unit
 import numpy as np
 import time
 import json
+import matplotlib.pyplot as plt
 
 from onshapeComm.ConfigurationEncoder import KinematicSampleConfigurationEncoder, ValueWithUnit, Units
 from onshapeComm.Keys import Keys
@@ -19,19 +20,24 @@ requestUrlCreator = RequestUrlCreator(url)
 onshapeAPI = OnshapeAPI(keys, requestUrlCreator)
 
 configurationEncoder = KinematicSampleConfigurationEncoder()
-configurationEncoder.addParameter(ValueWithUnit(0.05, Units.METER))
+configurationEncoder.addParameter(ValueWithUnit(0.07, Units.METER))
 
 tic = time.perf_counter()
-parsed = onshapeAPI.doAPIRequestForJson(configurationEncoder, Names.SAMPLES_ATTRIBUTE_NAME)
+apiResponse = onshapeAPI.doAPIRequestForJson(configurationEncoder, Names.SAMPLES_ATTRIBUTE_NAME)
 toc = time.perf_counter()
+
+# print(json.dumps(apiResponse, indent=2))
 print("time total " + str(toc - tic))
 
-# conversion = JsonToPython.toPythonStructure(parsed)
+range = apiResponse["Range"]
+numel = len(range)
+inputsAll = range[Names.SAMPLE_RANGE_INPUT_ATTR_NAME]
+outputsAll = range[Names.SAMPLE_RANGE_OUTPUT_ATTR_NAME]
+inputs = [x[0]for x in inputsAll]
+outputs = [x[Names.KinematicAuxMeasurementInfo]["Hypotenuse"] for x in outputsAll]
 
-print(json.dumps(parsed, indent=2))
+plt.plot(inputs, outputs)
+plt.show()
 
-# value = conversion["Hello"]["OutputKinematics"]
-# print(value)
-
-
-# print(json.dumps(parsed, indent=2))
+print(inputs)
+print(outputs)

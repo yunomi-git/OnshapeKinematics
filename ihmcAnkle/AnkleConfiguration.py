@@ -24,3 +24,9 @@ class AnkleConfiguration(KinematicSampleConfigurationEncoder):
         self.relativeX = relativeX
         self.relativeY = relativeY
         self.relativeZ = relativeZ
+
+    def relativeY(self):
+        return self.relativeY.value
+
+    def globalY(self):
+        return self.globalY.value
