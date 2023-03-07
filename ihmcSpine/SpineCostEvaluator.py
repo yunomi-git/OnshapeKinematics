@@ -18,10 +18,15 @@ class SpineCostEvaluator:
 
 
 
-def getSpineCostsNd(apiResponse, parameters, minTorqueConstraint, boreDiameterOverride = None, debug=False):
+def getSpineCostsNd(apiResponse,
+                    parameters,
+                    minTorqueConstraint,
+                    actuatorExtraLength = 0.063, # Load cell and other stuff
+                    boreDiameterOverride = False,
+                    debug=False):
     boreDiameter = 0.020
-    minTorqueConstraint = 150.0
-    actuatorExtraLength = 0.063
+    if boreDiameterOverride:
+        boreDiameter = getBoreDiameter(parameters)
 
     # Constraints
     # Check validity at min ROM (Actuator length + min stroke) #
@@ -57,19 +62,20 @@ def getSpineCostsNd(apiResponse, parameters, minTorqueConstraint, boreDiameterOv
     constraintsViolated = []
     if minTorque < minTorqueConstraint:
         constraintsAreMet = False
-        constraintsViolated.append(["Min Torque is too low"])
+        constraintsViolated.append("Min Torque is too low")
 
     if strokeLength > 0.100:
         constraintsAreMet = False
-        constraintsViolated.append(["Stroke length > 0.1"])
+        constraintsViolated.append("Stroke length > 0.1")
 
     if minLength < (actuatorExtraLength + strokeLength):
-        constraintsViolated.append(["Stroke does not fit in actuator"])
+        constraintsViolated.append("Stroke does not fit in actuator")
 
     # Objective Calculation
     objectives = {"MaxWidth" : maxWidth,
                   "MaxHeight" : maxHeight,
-                  "MaxForce" : maxForce}
+                  "MaxForce" : maxForce,
+                  "BoreDiameter" : boreDiameter}
 
     if debug:
         print("--- Diagnostics ---")
@@ -93,12 +99,15 @@ def getSpineCostsNd(apiResponse, parameters, minTorqueConstraint, boreDiameterOv
 
         print("Min Length: " + str(minLength))
         print("Length Change: " + str(strokeLength))
+        print("Bore Diameter: " + str(boreDiameter))
 
     if constraintsAreMet:
         return Costs.createMultiObjCost(objectives)
     else:
         return Costs.createInvalidMultiObjCost(constraintsViolated)
 
+def getBoreDiameter(parameters : np.ndarray):
+    return parameters[4]
 def getTorques(apiResponse, boreDiameter):
     cylinderArea = math.pi * (boreDiameter/2.0) * (boreDiameter/2.0)
     jacobians = []
