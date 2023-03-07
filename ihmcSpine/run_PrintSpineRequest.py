@@ -47,11 +47,11 @@ if __name__ == "__main__":
     onshapeAPI = OnshapeAPI(keys, requestUrlCreator)
 
     parameters = KinematicSampleConfigurationEncoder()
-    parameters.addParameter(ValueWithUnit(0.00, Units.RADIAN))
-    parameters.addParameter(ValueWithUnit(0.10, Units.METER))
-    parameters.addParameter(ValueWithUnit(0.00, Units.RADIAN))
-    parameters.addParameter(ValueWithUnit(0.20, Units.METER))
-    parameters.addParameter(ValueWithUnit(0.02, Units.METER))
+    parameters.addParameter(ValueWithUnit(0.10, Units.RADIAN)) # Crank Angle
+    parameters.addParameter(ValueWithUnit(0.0550, Units.METER)) # Crank Length
+    parameters.addParameter(ValueWithUnit(0.30, Units.RADIAN)) # Mounting Angle
+    parameters.addParameter(ValueWithUnit(0.10, Units.METER)) # Mounting Length
+    parameters.addParameter(ValueWithUnit(0.02, Units.METER)) # Bore Diameter
 
     tic = time.perf_counter()
     apiResponse = onshapeAPI.doAPIRequestForJson(parameters, Names.SAMPLES_ATTRIBUTE_NAME)
@@ -60,15 +60,40 @@ if __name__ == "__main__":
     print(json.dumps(apiResponse, indent=4))
     print("time total " + str(toc - tic))
 
+    minTorqueConstraint = 150.0
+    actuatorExtraLength = 0.063
+
     costs = SpineCostEvaluator.getSpineCostsNd(apiResponse,
                                                parameters=parameters.numpyParameters,
-                                               minTorqueConstraint=150.0,
-                                               actuatorExtraLength=0.063,
+                                               minTorqueConstraint=minTorqueConstraint,
+                                               actuatorExtraLength=actuatorExtraLength,
                                                boreDiameterOverride=True,
                                                debug=True)
     costs.print()
 
+    weights = {
+        SpineNames.MaxWidthCost : 0.2,
+        SpineNames.MaxHeightCost : 0.2,
+        SpineNames.MaxForceCost : 0.3,
+        SpineNames.BoreDiameterCost : 0.1
+    }
+
+    normalization = {
+        SpineNames.MaxWidthCost: 0.05,
+        SpineNames.MaxHeightCost: 0.14,
+        SpineNames.MaxForceCost: 6000.0,
+        SpineNames.BoreDiameterCost: 0.02
+    }
+    costEvaluator = SpineCostEvaluator.SpineCostEvaluator(weights=weights,
+                                                          normalization=normalization,
+                                                          minTorqueConstraint=minTorqueConstraint,
+                                                          actuatorExtraLength=actuatorExtraLength)
+    cost1D = costEvaluator.calculateCostFromOnshape(parameters=parameters.numpyParameters,
+                                                    apiResponse=apiResponse)
+    print("1d cost: " + str(cost1D))
+
     plotTorques(apiResponse, SpineCostEvaluator.getBoreDiameter(parameters.numpyParameters))
+
 
 
 

@@ -7,27 +7,46 @@ import numpy as np
 import math
 import optimization.Costs as Costs
 
+INVALID_COST = -1000
+
 
 class SpineCostEvaluator:
-    def __init__(self, weights):
-        pass
+    def __init__(self,
+                 weights : dict,
+                 normalization : dict,
+                 minTorqueConstraint : float,
+                actuatorExtraLength = 0.063, # Load cell and other stuff
+                ):
+        self.weights = weights
+        self.normalization = normalization
+        self.minTorqueConstraint = minTorqueConstraint
+        self.actuatorLengthExtra = actuatorExtraLength
 
     # apiResponse the response from calling onshapeAPI.doAPIRequestForJson()
-    def calculateCostFromOnshape(parameters : KinematicSampleConfigurationEncoder, apiResponse) -> float:
-        return getSpineCostsNd(apiResponse)
+    def calculateCostFromOnshape(self, parameters : np.ndarray, apiResponse) -> float:
+        multiObjCost =  getSpineCostsNd(apiResponse,
+                                        parameters=parameters,
+                                        minTorqueConstraint=self.minTorqueConstraint,
+                                        actuatorExtraLength=self.actuatorLengthExtra,
+                                        boreDiameterOverride=True,
+                                        debug=False)
+        if multiObjCost.constraintsMet:
+            cost = 0
+            costValues = multiObjCost.objectiveCosts
+            for costName in costValues.keys():
+                cost += costValues[costName] / self.normalization[costName] * self.weights[costName]
+            return cost
+        else:
+            return INVALID_COST # Invalid cost
 
 
 
 def getSpineCostsNd(apiResponse,
-                    parameters,
-                    minTorqueConstraint,
+                    parameters : np.ndarray,
+                    minTorqueConstraint : float,
                     actuatorExtraLength = 0.063, # Load cell and other stuff
                     boreDiameterOverride = False,
                     debug=False):
-    boreDiameter = 0.020
-    if boreDiameterOverride:
-        boreDiameter = getBoreDiameter(parameters)
-
     # Constraints
     # Check validity at min ROM (Actuator length + min stroke) #
     # Check validity at max ROM (Actuator length + max stroke) #
@@ -35,12 +54,15 @@ def getSpineCostsNd(apiResponse,
     # Look at sample of torques across ROM. Must be min xxx Nm. Function of bore diameter #
 
     # Optimize
-
     # Look at max width from crank #
     # Look at width of mounting point #
     # Look at max height of crank from mounting mount #
     # Look at bore diameter
     # Look at peak force from ^ sample of torques
+
+    boreDiameter = 0.020
+    if boreDiameterOverride:
+        boreDiameter = getBoreDiameter(parameters)
 
     # Force and torques
     torques = getTorques(apiResponse, boreDiameter)
@@ -72,10 +94,10 @@ def getSpineCostsNd(apiResponse,
         constraintsViolated.append("Stroke does not fit in actuator")
 
     # Objective Calculation
-    objectives = {"MaxWidth" : maxWidth,
-                  "MaxHeight" : maxHeight,
-                  "MaxForce" : maxForce,
-                  "BoreDiameter" : boreDiameter}
+    objectives = {SpineNames.MaxWidthCost : maxWidth,
+                  SpineNames.MaxHeightCost : maxHeight,
+                  SpineNames.MaxForceCost : maxForce,
+                  SpineNames.BoreDiameterCost : boreDiameter}
 
     if debug:
         print("--- Diagnostics ---")
@@ -88,8 +110,8 @@ def getSpineCostsNd(apiResponse,
         print("Mounting Width: " + str(getMountingWidth(apiResponse)))
         print("Max Crank Height: " + str(getMaxCrankHeight(apiResponse)))
 
-
-        print("Max Length: " + str(maxLength))
+        print("Min Actuator Length: " + str(minLength))
+        print("Max Actuator Length: " + str(maxLength))
 
         print("--- Evaluation ---")
         print("Min torque is: " + str(minTorque))
@@ -97,8 +119,8 @@ def getSpineCostsNd(apiResponse,
         print("Max Width = " + str(maxWidth))
         print("Max Height: " + str(maxHeight))
 
-        print("Min Length: " + str(minLength))
-        print("Length Change: " + str(strokeLength))
+
+        print("Actuator Stroke Length: " + str(strokeLength))
         print("Bore Diameter: " + str(boreDiameter))
 
     if constraintsAreMet:

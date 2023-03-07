@@ -13,3 +13,8 @@ MaxCrankHeight = "MaxCrankHeight"
 MaxCrankHeightPosition = "MaxCrankHeightPosition"
 MaxCrankWidthPosition = "MaxCrankWidthPosition"
 SampleAllValues = "SampleAllValues"
+
+MaxWidthCost =  "MaxWidthCost"
+MaxHeightCost = "MaxHeightCost"
+MaxForceCost = "MaxForceCost"
+BoreDiameterCost = "BoreDiameterCost"

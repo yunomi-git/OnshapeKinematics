@@ -1,9 +1,12 @@
+import numpy as np
 import torch
 from botorch.models import SingleTaskGP
 from botorch.fit import fit_gpytorch_mll
 from gpytorch.mlls import ExactMarginalLogLikelihood
 from botorch.acquisition import UpperConfidenceBound
 from botorch.optim import optimize_acqf
+
+from optimization.ParameterBounds import ParameterBounds
 
 from optimization import OnshapeCostEvaluator
 from onshapeComm.ConfigurationEncoder import KinematicSampleConfigurationEncoder
@@ -21,6 +24,14 @@ def appendNew1DCost(costList, newCost):
 
     costList = torch.cat((costList, tensorCost), dim=0)
     return costList
+
+def appendXToList(xList, newX : torch.Tensor):
+    newX = torch.reshape(newX, (1, newX.numel()))
+    if torch.numel(xList) == 0:
+        return newX
+
+    costList = torch.cat((xList, newX), dim=0)
+    return costList
 class BayesOptOnshapeWrapper:
     def __init__(self, onshapeCostEvaluator : OnshapeCostEvaluator, onshapeAPI : OnshapeAPI, parameterDimensions, unitsList):
         self.onshapeAPI = onshapeAPI
@@ -28,18 +39,30 @@ class BayesOptOnshapeWrapper:
         self.parameterDimensions = parameterDimensions
         self.unitsList = unitsList
 
-    def optimize(self, initialPoints, numIterations, boundsMagnitude):
+    def optimize(self, initialSamples, numIterations, boundsMagnitude = 0.0, bounds : ParameterBounds = None):
         # Initial Sampling
-        bounds = torch.stack([torch.ones(self.parameterDimensions) * -boundsMagnitude,
-                              torch.ones(self.parameterDimensions) * boundsMagnitude]).double()
-        train_X = ((2 * torch.rand(initialPoints, self.parameterDimensions) - 1.0) * boundsMagnitude).double()  # in meters
-        originalX = torch.zeros(1, self.parameterDimensions)
-        train_X = torch.cat((originalX, train_X))
+        if bounds is None:
+            bounds = torch.stack([torch.ones(self.parameterDimensions) * -boundsMagnitude,
+                                  torch.ones(self.parameterDimensions) * boundsMagnitude]).double()
+        else:
+            bounds = bounds.bounds
+
         train_Y = torch.tensor([[]])
-        for i in range(initialPoints + 1):
-            newY = self.evaluateCostWrapper(train_X[i])
+        train_X = torch.tensor([[]])
+        for sample in initialSamples: # List of Parameters
+            numpyX = sample.numpyParameters
+            newX = torch.from_numpy(numpyX).double()
+            newY = self.evaluateCostWrapper(newX)
+            train_X = appendXToList(train_X, newX)
             train_Y = appendNew1DCost(train_Y, newY)
-            print("---------------------------------------")
+        # train_X = ((2 * torch.rand(initialPoints, self.parameterDimensions) - 1.0) * boundsMagnitude).double()  # in meters
+        # originalX = torch.zeros(1, self.parameterDimensions)
+        # train_X = torch.cat((originalX, train_X))
+        # train_Y = torch.tensor([[]])
+        # for i in range(initialPoints + 1):
+        #     newY = self.evaluateCostWrapper(train_X[i])
+        #     train_Y = appendNew1DCost(train_Y, newY)
+        #     print("---------------------------------------")
 
         # Actually Run
         for i in range(numIterations):

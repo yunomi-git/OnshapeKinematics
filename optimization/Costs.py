@@ -7,7 +7,7 @@ class MultiObjCost:
     def print(self):
         if self.constraintsMet:
             for objective in self.objectiveCosts.keys():
-                print(objective + ": " + self.objectiveCosts[objective])
+                print(objective + ": " + str(self.objectiveCosts[objective]))
         else:
             print("Constraints have been violated: ")
             for constraint in self.violatedConstraints:
