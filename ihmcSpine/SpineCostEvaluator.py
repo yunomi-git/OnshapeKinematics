@@ -7,7 +7,7 @@ import numpy as np
 import math
 import optimization.Costs as Costs
 
-INVALID_COST = -1000
+INVALID_COST = -5.0
 
 
 class SpineCostEvaluator:

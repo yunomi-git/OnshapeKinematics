@@ -23,11 +23,13 @@ onshapeAPI = OnshapeAPI(keys, requestUrlCreator)
 
 minTorqueConstraint = 150.0
 actuatorExtraLength = 0.063
+
+# Negative means minimize
 weights = {
-    SpineNames.MaxWidthCost: 0.2,
-    SpineNames.MaxHeightCost: 0.2,
-    SpineNames.MaxForceCost: 0.3,
-    SpineNames.BoreDiameterCost: 0.1
+    SpineNames.MaxWidthCost: -0.2,
+    SpineNames.MaxHeightCost: -0.2,
+    SpineNames.MaxForceCost: -0.3,
+    SpineNames.BoreDiameterCost: -0.1
 }
 
 normalization = {
