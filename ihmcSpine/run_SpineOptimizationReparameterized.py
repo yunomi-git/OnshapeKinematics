@@ -10,13 +10,16 @@ from onshapeInterface.ConfigurationEncoder import ValueWithUnit, Units
 from onshapeInterface.Keys import Keys
 from onshapeInterface.RequestUrlCreator import RequestUrlCreator
 
-from ihmcSpine.SpineCostEvaluator import SpineCostEvaluator
+from ihmcSpine.SpineCostEvaluator import SpineCostEvaluator, getBoreDiameter
 from optimization.BayesOptWrapper import BayesOptOnshapeWrapper
 import ihmcSpine.SpineNames as SpineNames
 from optimization.ParameterBounds import ParameterBounds
+from ihmcSpine.SpineVisualization import plotTorques
 
-from storage.DataFromCsv import DataFromCsv
-from storage.Data import Data
+from data.DataFromCsv import DataFromCsv
+from data.Data import Data
+from data.VisualizeData import visualizeData
+
 
 access = 'I6M5WhNnlnrPeGGFucyKwlwa'
 secret = 'W9qbMjKaYzfBRbg8MPoAuP7sDICkLhlByVYLAT8cehiF4Gbv'
@@ -93,6 +96,8 @@ if __name__ == "__main__":
     apiResponse = onshapeAPI.doAPIRequestForJson(bestParamToEncoding, Names.SAMPLES_ATTRIBUTE_NAME)
     costs = spineCostEvaluator.getMultiObjectiveCostFromOnshape(parameters=bestParam.numpy(), apiResponse=apiResponse)
     costs.print()
+    boreDiameter = getBoreDiameter(bestParam.numpy())
+    plotTorques(apiResponse, boreDiameter)
     print("")
     print("===== Original Parameters")
     print("=========================")
@@ -100,4 +105,7 @@ if __name__ == "__main__":
     costs = spineCostEvaluator.getMultiObjectiveCostFromOnshape(parameters=initialParameter.numpyParameters, apiResponse=apiResponse)
     costs.print()
     print("")
+
+    visualizeData(bayesOptKinematicWrapper.data)
+
 

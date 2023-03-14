@@ -15,8 +15,8 @@ from optimization.BayesOptWrapper import BayesOptOnshapeWrapper
 import ihmcSpine.SpineNames as SpineNames
 from optimization.ParameterBounds import ParameterBounds
 
-from storage.DataFromCsv import DataFromCsv
-from storage.Data import Data
+from data.DataFromCsv import DataFromCsv
+from data.Data import Data
 
 access = 'I6M5WhNnlnrPeGGFucyKwlwa'
 secret = 'W9qbMjKaYzfBRbg8MPoAuP7sDICkLhlByVYLAT8cehiF4Gbv'

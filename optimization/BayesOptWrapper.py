@@ -14,7 +14,7 @@ from onshapeInterface.OnshapeAPI import OnshapeAPI
 import onshapeInterface.Names as Names
 import time
 from onshapeInterface.ConfigurationEncoder import ValueWithUnit, Units
-from storage.Data import Data
+from data.Data import Data
 
 # def appendNew1DCost(costList, newCost):
 #     # costlist is 1xn tensor

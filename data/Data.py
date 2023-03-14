@@ -13,7 +13,7 @@ class Data:
             self.xValues = initialXValues
             self.yValues = initialYValues
 
-    def getAllXTensor(self):
+    def getAllXTensor(self) -> torch.Tensor:
         return self.xValues
 
     def getAllYTensor(self):

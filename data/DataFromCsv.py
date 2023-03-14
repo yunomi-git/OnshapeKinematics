@@ -7,7 +7,7 @@ from typing import Tuple
 import pandas as pd
 import paths
 
-from storage.Data import Data
+from data.Data import Data
 
 class DataFromCsv:
     def __init__(self, fileName : str):
