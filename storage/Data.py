@@ -3,9 +3,15 @@ import numpy as np
 import torch
 
 class Data:
-    def __init__(self):
-        self.yValues = torch.tensor([[]])
-        self.xValues = torch.tensor([[]])
+    def __init__(self,
+                 initialXValues : torch.Tensor = None,
+                 initialYValues : torch.Tensor = None):
+        if (initialXValues is None) or (initialYValues is None):
+            self.yValues = torch.tensor([[]])
+            self.xValues = torch.tensor([[]])
+        else:
+            self.xValues = initialXValues
+            self.yValues = initialYValues
 
     def getAllXTensor(self):
         return self.xValues
@@ -13,16 +19,19 @@ class Data:
     def getAllYTensor(self):
         return self.yValues
 
-    def addDataFromNumpy(self, numpyX : np.ndarray = None,
-                numpyY : np.ndarray = None):
+    def addDataFromNumpy(self,
+                         numpyX : np.ndarray,
+                         numpyY : np.ndarray):
         tensorX = torch.from_numpy(numpyX).double()
         tensorY = torch.from_numpy(numpyY).double()
         self.addDataFromTensor(tensorX, tensorY)
 
-    def addDataFromTensor(self, tensorX: torch.Tensor = None,
-                         tensorY: torch.Tensor = None):
+    def addDataFromTensor(self,
+                          tensorX: torch.Tensor,
+                          tensorY: torch.Tensor):
         self.yValues = self.addDataToList(self.yValues, tensorY)
         self.xValues = self.addDataToList(self.xValues, tensorX)
+
 
     def addDataToList(self, tensorList : torch.Tensor, tensorVal : torch.Tensor):
         newVal = torch.reshape(tensorVal, (1, tensorVal.numel()))

@@ -15,6 +15,9 @@ from optimization.BayesOptWrapper import BayesOptOnshapeWrapper
 import ihmcSpine.SpineNames as SpineNames
 from optimization.ParameterBounds import ParameterBounds
 
+from storage.DataFromCsv import DataFromCsv
+from storage.Data import Data
+
 access = 'I6M5WhNnlnrPeGGFucyKwlwa'
 secret = 'W9qbMjKaYzfBRbg8MPoAuP7sDICkLhlByVYLAT8cehiF4Gbv'
 keys = Keys(access, secret)
@@ -45,6 +48,8 @@ spineCostEvaluator = SpineCostEvaluator(weights=weights,
                                         minTorqueConstraint=minTorqueConstraint,
                                         actuatorExtraLength=actuatorExtraLength)
 
+saveName = "ihmcAnkle"
+
 if __name__ == "__main__":
     unitsList = [Units.RADIAN,
                  Units.METER,
@@ -56,13 +61,17 @@ if __name__ == "__main__":
                                                       onshapeAPI=onshapeAPI,
                                                       parameterDimensions=len(unitsList),
                                                       unitsList=unitsList)
-    # TODO: also options to load past data, select specific points to sample
+
     parameterBounds = ParameterBounds()
     parameterBounds.addBound(-1.57079633, 1.57079633)   # Crank Angle
     parameterBounds.addBound(0.010, 0.300)              # Crank Length
     parameterBounds.addBound(0.0, 1.57079633)           # Mounting Angle
     parameterBounds.addBound(0.010, 0.300)              # Mounting Length
     parameterBounds.addBound(0.010, 0.030)              # Bore Diameter
+
+    # Load old data
+    dataExporter = DataFromCsv(saveName)
+    data = dataExporter.loadData()
 
     initialParameter = KinematicSampleConfigurationEncoder(unitsList=unitsList)
     initialParameter.addParameters(np.array([0.10,  # Crank Angle
@@ -73,9 +82,12 @@ if __name__ == "__main__":
 
     bestParam, bestCost = bayesOptKinematicWrapper.optimize(initialSamples=[initialParameter],
                                                             numIterations=20,
-                                                            bounds=parameterBounds)
-    # TODO: also select where to save this run
+                                                            bounds=parameterBounds,
+                                                            existingData=data)
+    # Save data
+    dataExporter.saveData(bayesOptKinematicWrapper.data)
 
+    # Diagnostics
     print("===== Best Parameters")
     print("=========================")
     print(bestParam)

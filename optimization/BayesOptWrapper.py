@@ -40,8 +40,14 @@ class BayesOptOnshapeWrapper:
         self.onshapeCostEvaluator = onshapeCostEvaluator
         self.parameterDimensions = parameterDimensions
         self.unitsList = unitsList
+        self.data = Data()
 
-    def optimize(self, initialSamples, numIterations, boundsMagnitude = 0.0, bounds : ParameterBounds = None):
+    def optimize(self,
+                 initialSamples : list,
+                 numIterations,
+                 boundsMagnitude = 0.0,
+                 existingData : Data = None,
+                 bounds : ParameterBounds = None):
         # Initial Sampling
         if bounds is None:
             bounds = torch.stack([torch.ones(self.parameterDimensions) * -boundsMagnitude,
@@ -49,17 +55,19 @@ class BayesOptOnshapeWrapper:
         else:
             bounds = bounds.bounds
 
-        data = Data()
+        if existingData is not None:
+            self.data = existingData
+
         for sample in initialSamples: # List of Parameters
             numpyX = sample.numpyParameters
             newX = torch.from_numpy(numpyX).double()
             newY = self.evaluateCostWrapper(newX)
-            data.addDataFromTensor(tensorX=newX, tensorY=newY)
+            self.data.addDataFromTensor(tensorX=newX, tensorY=newY)
 
         # Actually Run
         for i in range(numIterations):
             # gp = SingleTaskGP(train_X, train_Y)
-            gp = SingleTaskGP(data.getAllXTensor(), data.getAllYTensor())
+            gp = SingleTaskGP(self.data.getAllXTensor(), self.data.getAllYTensor())
             mll = ExactMarginalLogLikelihood(gp.likelihood, gp)
             fit_gpytorch_mll(mll)
 
@@ -71,14 +79,14 @@ class BayesOptOnshapeWrapper:
 
             newY = self.evaluateCostWrapper(candidate[0])
             print(newY)
-            data.addDataFromTensor(tensorX=candidate, tensorY=newY)
+            self.data.addDataFromTensor(tensorX=candidate, tensorY=newY)
             print("---------------------------------------")
 
-        bestIndex = torch.argmax(data.getAllYTensor())
-        bestParam = data.getAllXTensor()[bestIndex]
+        bestIndex = torch.argmax(self.data.getAllYTensor())
+        bestParam = self.data.getAllXTensor()[bestIndex]
         bestCost = self.evaluateCostWrapper(bestParam)
         print("All Costs: ------------")
-        print(data.getAllYTensor())
+        print(self.data.getAllYTensor())
         print("---------------")
         return bestParam, bestCost
 
