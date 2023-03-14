@@ -27,7 +27,7 @@ class DataFromCsv:
     # Output is (xTensor, yTensor)
     def loadData(self) -> Data:
         if (not os.path.isfile(self.dataInputPath)) or (not os.path.isfile(self.dataOutputPath)):
-            return None, None
+            return None
 
         xDataFrame = pd.read_csv(self.dataInputPath)
         yDataFrame = pd.read_csv(self.dataOutputPath)

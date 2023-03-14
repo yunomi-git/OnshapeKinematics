@@ -67,6 +67,11 @@ def getSpineCostsNd(apiResponse,
     # Look at bore diameter
     # Look at peak force from ^ sample of torques
 
+    if apiResponse is None:
+        constraintsViolated = []
+        constraintsViolated.append("Onsh")
+        return Costs.createInvalidMultiObjCost(constraintsViolated)
+
     boreDiameter = 0.020
     if boreDiameterOverride:
         boreDiameter = getBoreDiameter(parameters)
@@ -98,6 +103,7 @@ def getSpineCostsNd(apiResponse,
         constraintsViolated.append("Stroke length > 0.1")
 
     if minLength < (actuatorExtraLength + strokeLength):
+        constraintsAreMet = False
         constraintsViolated.append("Stroke does not fit in actuator")
 
     # Objective Calculation

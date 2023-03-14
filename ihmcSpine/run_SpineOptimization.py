@@ -81,7 +81,7 @@ if __name__ == "__main__":
                                              0.02])) # Bore Diameter
 
     bestParam, bestCost = bayesOptKinematicWrapper.optimize(initialSamples=[initialParameter],
-                                                            numIterations=20,
+                                                            numIterations=40,
                                                             bounds=parameterBounds,
                                                             existingData=data)
     # Save data

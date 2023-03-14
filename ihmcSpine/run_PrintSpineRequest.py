@@ -52,12 +52,14 @@ if __name__ == "__main__":
                  Units.METER,
                  Units.METER]
 
-    parameters = KinematicSampleConfigurationEncoder(unitsList=unitsList)
-    parameters.addParameters(np.array([0.10,  # Crank Angle
-                                             0.055, # Crank Length
-                                             0.30, # Mounting Angle
-                                             0.10, # Mounting Length
-                                             0.02])) # Bore Diameter
+    numpyParameters = np.array([-0.0795,  0.0595,  0.4426,  0.1169,  0.0189])
+    parameters = KinematicSampleConfigurationEncoder(unitsList=unitsList, numpyParameters=numpyParameters)
+
+    # parameters.addParameters(np.array([0.10,  # Crank Angle
+    #                                          0.055, # Crank Length
+    #                                          0.30, # Mounting Angle
+    #                                          0.10, # Mounting Length
+    #                                          0.02])) # Bore Diameter
     print(parameters.getEncoding())
 
     tic = time.perf_counter()

@@ -23,6 +23,7 @@ class OnshapeAPI:
 
 
     # inputs is np array, unitsList is string array
+    # returns parsed API request, or None if error occurred
     def doAPIRequestForJson(self, configuration : ConfigurationEncoder, attributeName : str):
         # Configuration of the request
         config = configuration.getEncoding()
@@ -43,6 +44,10 @@ class OnshapeAPI:
                                                   body=payload)
         parsed = json.loads(response.data)
 
+        if "notices" in parsed.keys() and len(parsed["notices"]) > 0:
+            print("Onshape Error: ")
+            print(configuration.numpyParameters)
+            return None
         conversion = JsonToPython.toPythonStructure(parsed)
 
         return conversion
