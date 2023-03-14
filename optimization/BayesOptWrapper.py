@@ -14,6 +14,8 @@ from onshapeComm.OnshapeAPI import OnshapeAPI
 import onshapeComm.Names as Names
 import time
 from onshapeComm.ConfigurationEncoder import ValueWithUnit, Units
+from storage.Data import Data
+
 def appendNew1DCost(costList, newCost):
     # costlist is 1xn tensor
     # newCost is scalar cost
@@ -47,26 +49,17 @@ class BayesOptOnshapeWrapper:
         else:
             bounds = bounds.bounds
 
-        train_Y = torch.tensor([[]])
-        train_X = torch.tensor([[]])
+        data = Data()
         for sample in initialSamples: # List of Parameters
             numpyX = sample.numpyParameters
             newX = torch.from_numpy(numpyX).double()
             newY = self.evaluateCostWrapper(newX)
-            train_X = appendXToList(train_X, newX)
-            train_Y = appendNew1DCost(train_Y, newY)
-        # train_X = ((2 * torch.rand(initialPoints, self.parameterDimensions) - 1.0) * boundsMagnitude).double()  # in meters
-        # originalX = torch.zeros(1, self.parameterDimensions)
-        # train_X = torch.cat((originalX, train_X))
-        # train_Y = torch.tensor([[]])
-        # for i in range(initialPoints + 1):
-        #     newY = self.evaluateCostWrapper(train_X[i])
-        #     train_Y = appendNew1DCost(train_Y, newY)
-        #     print("---------------------------------------")
+            data.addDataFromTensor(tensorX=newX, tensorY=newY)
 
         # Actually Run
         for i in range(numIterations):
-            gp = SingleTaskGP(train_X, train_Y)
+            # gp = SingleTaskGP(train_X, train_Y)
+            gp = SingleTaskGP(data.getAllXTensor(), data.getAllYTensor())
             mll = ExactMarginalLogLikelihood(gp.likelihood, gp)
             fit_gpytorch_mll(mll);
 
@@ -76,29 +69,26 @@ class BayesOptOnshapeWrapper:
                 UCB, bounds=bounds, q=1, num_restarts=5, raw_samples=20,
             )
 
-            train_X = torch.cat((train_X, candidate))
+            # train_X = torch.cat((train_X, candidate))
             newY = self.evaluateCostWrapper(candidate[0])
             print(newY)
-            train_Y = appendNew1DCost(train_Y, newY)
+            # train_Y = appendNew1DCost(train_Y, newY)
+            data.addDataFromTensor(tensorX=candidate, tensorY=newY)
             print("---------------------------------------")
 
-        bestIndex = torch.argmax(train_Y)
-        bestParam = train_X[bestIndex]
+        bestIndex = torch.argmax(data.getAllYTensor())
+        bestParam = data.getAllXTensor()[bestIndex]
         bestCost = self.evaluateCostWrapper(bestParam)
         print("All Costs: ------------")
-        print(train_Y)
+        print(data.getAllYTensor())
         print("---------------")
         return bestParam, bestCost
 
-    def evaluateCostWrapper(self, parameters : torch.Tensor):
-        configuration = KinematicSampleConfigurationEncoder()
+    def evaluateCostWrapper(self, parameters : torch.Tensor) -> torch.Tensor:
+        configuration = KinematicSampleConfigurationEncoder(self.unitsList)
         numpyParameters = parameters.numpy()
         print(numpyParameters)
-
-        for i in range(self.parameterDimensions):
-            value = numpyParameters[i]
-            unit = self.unitsList[i]
-            configuration.addParameter(ValueWithUnit(value, unit))
+        configuration.addParameters(numpyParameters)
 
         tic = time.perf_counter()
         apiResponse = self.onshapeAPI.doAPIRequestForJson(configuration, Names.SAMPLES_ATTRIBUTE_NAME)
@@ -107,5 +97,5 @@ class BayesOptOnshapeWrapper:
 
 
         cost = self.onshapeCostEvaluator(numpyParameters, apiResponse)
-        return cost
+        return torch.tensor([[cost]]).double()
 

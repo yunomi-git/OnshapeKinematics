@@ -29,9 +29,22 @@ class ConfigurationEncoder:
 
 
 class KinematicSampleConfigurationEncoder(ConfigurationEncoder):
-    def __init__(self):
+    def __init__(self, unitsList : list = None, numpyParameters : np.ndarray = None):
         super(KinematicSampleConfigurationEncoder, self).__init__()
-        self.numParameters = 0
+        self.parameterIndex = 0
+        self.unitsList = unitsList
+        if unitsList is not None:
+            self.numDim = len(unitsList)
+        if numpyParameters is not None:
+            self.addParameters(numpyParameters)
+
     def addParameter(self, value : ValueWithUnit):
-        self.numParameters += 1
-        self.addConfiguration("Parameter" + str(self.numParameters), value)
+        self.parameterIndex += 1
+        self.addConfiguration("Parameter" + str(self.parameterIndex), value)
+
+    def addParameters(self, numpyParameters : np.ndarray):
+        if self.unitsList is not None:
+            for i in range(self.numDim):
+                self.addParameter(ValueWithUnit(numpyParameters[i], self.unitsList[i]))
+        else:
+            print("Configuration encoder: unitsList is None")

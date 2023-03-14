@@ -46,12 +46,25 @@ if __name__ == "__main__":
     requestUrlCreator = RequestUrlCreator(url)
     onshapeAPI = OnshapeAPI(keys, requestUrlCreator)
 
-    parameters = KinematicSampleConfigurationEncoder()
-    parameters.addParameter(ValueWithUnit(0.10, Units.RADIAN)) # Crank Angle
-    parameters.addParameter(ValueWithUnit(0.0550, Units.METER)) # Crank Length
-    parameters.addParameter(ValueWithUnit(0.30, Units.RADIAN)) # Mounting Angle
-    parameters.addParameter(ValueWithUnit(0.10, Units.METER)) # Mounting Length
-    parameters.addParameter(ValueWithUnit(0.02, Units.METER)) # Bore Diameter
+    # parameters = KinematicSampleConfigurationEncoder()
+    # parameters.addParameter(ValueWithUnit(0.10, Units.RADIAN)) # Crank Angle
+    # parameters.addParameter(ValueWithUnit(0.0550, Units.METER)) # Crank Length
+    # parameters.addParameter(ValueWithUnit(0.30, Units.RADIAN)) # Mounting Angle
+    # parameters.addParameter(ValueWithUnit(0.10, Units.METER)) # Mounting Length
+    # parameters.addParameter(ValueWithUnit(0.02, Units.METER)) # Bore Diameter
+    unitsList = [Units.RADIAN,
+                 Units.METER,
+                 Units.RADIAN,
+                 Units.METER,
+                 Units.METER]
+
+    parameters = KinematicSampleConfigurationEncoder(unitsList=unitsList)
+    parameters.addParameters(np.array([0.10,  # Crank Angle
+                                             0.055, # Crank Length
+                                             0.30, # Mounting Angle
+                                             0.10, # Mounting Length
+                                             0.20])) # Bore Diameter
+    print(parameters.getEncoding())
 
     tic = time.perf_counter()
     apiResponse = onshapeAPI.doAPIRequestForJson(parameters, Names.SAMPLES_ATTRIBUTE_NAME)
