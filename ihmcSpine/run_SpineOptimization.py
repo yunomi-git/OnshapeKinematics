@@ -73,11 +73,12 @@ if __name__ == "__main__":
     dataExporter = DataFromCsv(saveName)
     data = dataExporter.loadData()
 
+
     initialParameter = KinematicSampleConfigurationEncoder(unitsList=unitsList)
-    initialParameter.addParameters(np.array([0.10,  # Crank Angle
-                                             0.055, # Crank Length
-                                             0.30, # Mounting Angle
-                                             0.10, # Mounting Length
+    initialParameter.addParameters(np.array([0.1745,  # Crank Angle
+                                             0.060, # Crank Length
+                                             0.611, # Mounting Angle
+                                             0.200, # Mounting Length
                                              0.02])) # Bore Diameter
 
     bestParam, bestCost = bayesOptKinematicWrapper.optimize(initialSamples=[initialParameter],

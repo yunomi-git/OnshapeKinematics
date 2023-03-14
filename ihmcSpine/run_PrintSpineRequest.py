@@ -52,7 +52,7 @@ if __name__ == "__main__":
                  Units.METER,
                  Units.METER]
 
-    numpyParameters = np.array([-0.0795,  0.0595,  0.4426,  0.1169,  0.0189])
+    numpyParameters = np.array([0.1745,  0.060,  0.611,  0.200,  0.020])
     parameters = KinematicSampleConfigurationEncoder(unitsList=unitsList, numpyParameters=numpyParameters)
 
     # parameters.addParameters(np.array([0.10,  # Crank Angle
