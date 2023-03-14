@@ -1,5 +1,5 @@
 from enum import Enum
-from onshapeComm.ConfigurationEncoder import Units, ValueWithUnit
+from onshapeInterface.ConfigurationEncoder import Units, ValueWithUnit
 
 class OnshapeType(Enum):
     BTFSValueMap = 2062

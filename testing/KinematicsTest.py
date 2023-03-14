@@ -1,4 +1,4 @@
-from onshapeComm.OnshapeKinematics import OnshapeKinematicsAPI
+from onshapeInterface.OnshapeKinematics import OnshapeKinematicsAPI
 from mathUtil.kinematics import KinematicsToolbox, Unit
 import numpy as np
 import time

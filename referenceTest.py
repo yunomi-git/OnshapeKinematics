@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-from onshapeComm.ConfigurationEncoder import KinematicSampleConfigurationEncoder, ValueWithUnit, Units
+from onshapeInterface.ConfigurationEncoder import KinematicSampleConfigurationEncoder, ValueWithUnit, Units
 
 # class Caller:
 #     def foo(self, input):

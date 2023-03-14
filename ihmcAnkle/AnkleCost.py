@@ -1,6 +1,6 @@
 import numpy as np
 import json
-import onshapeComm.Names as Names
+import onshapeInterface.Names as Names
 from ihmcAnkle.AnkleConfiguration import AnkleConfiguration
 import numpy as Numpy
 import mathUtil.UnitConversions as uc

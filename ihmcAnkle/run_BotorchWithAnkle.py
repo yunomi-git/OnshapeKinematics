@@ -1,11 +1,11 @@
 import json
 
 import torch
-from onshapeComm.OnshapeAPI import OnshapeAPI
+from onshapeInterface.OnshapeAPI import OnshapeAPI
 
-from onshapeComm.ConfigurationEncoder import ValueWithUnit, Units
-from onshapeComm.Keys import Keys
-from onshapeComm.RequestUrlCreator import RequestUrlCreator
+from onshapeInterface.ConfigurationEncoder import ValueWithUnit, Units
+from onshapeInterface.Keys import Keys
+from onshapeInterface.RequestUrlCreator import RequestUrlCreator
 
 from ihmcAnkle.AnkleCost import AnkleCostEvaluator, AnkleCosts
 from optimization.BayesOptWrapper import BayesOptOnshapeWrapper

@@ -2,13 +2,13 @@ import json
 
 import torch
 import numpy as np
-from onshapeComm.OnshapeAPI import OnshapeAPI
-from onshapeComm.ConfigurationEncoder import KinematicSampleConfigurationEncoder, ValueWithUnit, Units
-import onshapeComm.Names as Names
+from onshapeInterface.OnshapeAPI import OnshapeAPI
+from onshapeInterface.ConfigurationEncoder import KinematicSampleConfigurationEncoder, ValueWithUnit, Units
+import onshapeInterface.Names as Names
 
-from onshapeComm.ConfigurationEncoder import ValueWithUnit, Units
-from onshapeComm.Keys import Keys
-from onshapeComm.RequestUrlCreator import RequestUrlCreator
+from onshapeInterface.ConfigurationEncoder import ValueWithUnit, Units
+from onshapeInterface.Keys import Keys
+from onshapeInterface.RequestUrlCreator import RequestUrlCreator
 
 from ihmcSpine.SpineCostEvaluator import SpineCostEvaluator
 from optimization.BayesOptWrapper import BayesOptOnshapeWrapper
@@ -69,30 +69,25 @@ if __name__ == "__main__":
                                              0.055, # Crank Length
                                              0.30, # Mounting Angle
                                              0.10, # Mounting Length
-                                             0.20])) # Bore Diameter
-    # initialParameter.addParameter(ValueWithUnit(0.10, Units.RADIAN)) # Crank Angle
-    # initialParameter.addParameter(ValueWithUnit(0.0550, Units.METER)) # Crank Length
-    # initialParameter.addParameter(ValueWithUnit(0.30, Units.RADIAN)) # Mounting Angle
-    # initialParameter.addParameter(ValueWithUnit(0.10, Units.METER)) # Mounting Length
-    # initialParameter.addParameter(ValueWithUnit(0.02, Units.METER)) # Bore Diameter
+                                             0.02])) # Bore Diameter
 
     bestParam, bestCost = bayesOptKinematicWrapper.optimize(initialSamples=[initialParameter],
-                                                            numIterations=10,
+                                                            numIterations=20,
                                                             bounds=parameterBounds)
     # TODO: also select where to save this run
 
-    print("Best Parameters")
+    print("===== Best Parameters")
+    print("=========================")
     print(bestParam)
     bestParamToEncoding = KinematicSampleConfigurationEncoder(unitsList=unitsList, numpyParameters=bestParam.numpy())
     apiResponse = onshapeAPI.doAPIRequestForJson(bestParamToEncoding, Names.SAMPLES_ATTRIBUTE_NAME)
-    costs = SpineCostEvaluator.getSpineCostsNd(apiResponse,
-                                               parameters=bestParamToEncoding.numpyParameters,
-                                               minTorqueConstraint=minTorqueConstraint,
-                                               actuatorExtraLength=actuatorExtraLength,
-                                               boreDiameterOverride=True,
-                                               debug=True)
+    costs = spineCostEvaluator.getMultiObjectiveCostFromOnshape(parameters=bestParam.numpy(), apiResponse=apiResponse)
     costs.print()
-    bayesOptKinematicWrapper.evaluateCostWrapper(bestParam)
-    print("Original Parameters")
-    bayesOptKinematicWrapper.evaluateCostWrapper(torch.tensor([0,0,0,0,0]))
+    print("")
+    print("===== Original Parameters")
+    print("=========================")
+    apiResponse = onshapeAPI.doAPIRequestForJson(initialParameter, Names.SAMPLES_ATTRIBUTE_NAME)
+    costs = spineCostEvaluator.getMultiObjectiveCostFromOnshape(parameters=initialParameter.numpyParameters, apiResponse=apiResponse)
+    costs.print()
+    print("")
 

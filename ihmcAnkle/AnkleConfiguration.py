@@ -1,5 +1,5 @@
-from onshapeComm.ConfigurationEncoder import KinematicSampleConfigurationEncoder
-from onshapeComm.ConfigurationEncoder import ValueWithUnit
+from onshapeInterface.ConfigurationEncoder import KinematicSampleConfigurationEncoder
+from onshapeInterface.ConfigurationEncoder import ValueWithUnit
 class AnkleConfiguration(KinematicSampleConfigurationEncoder):
     def __init__(self):
         super(AnkleConfiguration, self).__init__()

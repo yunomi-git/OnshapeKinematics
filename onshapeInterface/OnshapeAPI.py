@@ -1,11 +1,11 @@
 import json
 from onshape_client.client import Client
 
-from onshapeComm.FeaturescriptPayloadCreator import FeaturescriptCreator
-from onshapeComm.JsonParser import JsonToPython
-from onshapeComm.ConfigurationEncoder import ConfigurationEncoder
-from onshapeComm.Keys import Keys
-from onshapeComm.RequestUrlCreator import RequestUrlCreator
+from onshapeInterface.FeaturescriptPayloadCreator import FeaturescriptCreator
+from onshapeInterface.JsonParser import JsonToPython
+from onshapeInterface.ConfigurationEncoder import ConfigurationEncoder
+from onshapeInterface.Keys import Keys
+from onshapeInterface.RequestUrlCreator import RequestUrlCreator
 
 class OnshapeAPI:
     def __init__(self, keys : Keys, requestUrlCreator : RequestUrlCreator):

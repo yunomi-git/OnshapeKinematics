@@ -1,8 +1,8 @@
-from onshapeComm.ConfigurationEncoder import KinematicSampleConfigurationEncoder
-from onshapeComm.ConfigurationEncoder import ValueWithUnit
+from onshapeInterface.ConfigurationEncoder import KinematicSampleConfigurationEncoder
+from onshapeInterface.ConfigurationEncoder import ValueWithUnit
 from enum import Enum
 import SpineNames
-from onshapeComm import Names
+from onshapeInterface import Names
 import numpy as np
 import math
 import optimization.Costs as Costs
@@ -39,6 +39,13 @@ class SpineCostEvaluator:
         else:
             return INVALID_COST # Invalid cost
 
+    def getMultiObjectiveCostFromOnshape(self, parameters : np.ndarray, apiResponse):
+        return getSpineCostsNd(apiResponse,
+                                parameters=parameters,
+                                minTorqueConstraint=self.minTorqueConstraint,
+                                actuatorExtraLength=self.actuatorLengthExtra,
+                                boreDiameterOverride=True,
+                                debug=True)
 
 
 def getSpineCostsNd(apiResponse,

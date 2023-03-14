@@ -1,14 +1,14 @@
-from onshapeComm.OnshapeAPI import OnshapeAPI
+from onshapeInterface.OnshapeAPI import OnshapeAPI
 from mathUtil.kinematics import KinematicsToolbox, Unit
 import numpy as np
 import time
 import json
 
-from onshapeComm.ConfigurationEncoder import KinematicSampleConfigurationEncoder, ValueWithUnit, Units
-from onshapeComm.Keys import Keys
-from onshapeComm.RequestUrlCreator import RequestUrlCreator
-import onshapeComm.Names as Names
-from onshapeComm.JsonParser import JsonToPython
+from onshapeInterface.ConfigurationEncoder import KinematicSampleConfigurationEncoder, ValueWithUnit, Units
+from onshapeInterface.Keys import Keys
+from onshapeInterface.RequestUrlCreator import RequestUrlCreator
+import onshapeInterface.Names as Names
+from onshapeInterface.JsonParser import JsonToPython
 from ihmcAnkle.AnkleConfiguration import AnkleConfiguration
 from ihmcAnkle.AnkleCost import AnkleCostEvaluator, AnkleCosts
 

@@ -1,6 +1,6 @@
 # Class creates the payload to send via the Featurescript API endpoint
 
-import onshapeComm.Names as names
+import onshapeInterface.Names as names
 class FeaturescriptCreator:
     def getAttribute(attributeName : str):
         script = """

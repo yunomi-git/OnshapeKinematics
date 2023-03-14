@@ -1,11 +1,11 @@
 import requests
 import json 
-from onshapeComm.RequestUrlCreator import RequestUrlCreator
+from onshapeInterface.RequestUrlCreator import RequestUrlCreator
 from onshape_client.client import Client
 from onshape_client.onshape_url import OnshapeElement
 import time
-from onshapeComm.FeaturescriptPayloadCreator import FeaturescriptCreator
-import onshapeComm.Names as Names
+from onshapeInterface.FeaturescriptPayloadCreator import FeaturescriptCreator
+import onshapeInterface.Names as Names
 
 
 class ValueWithUnit:

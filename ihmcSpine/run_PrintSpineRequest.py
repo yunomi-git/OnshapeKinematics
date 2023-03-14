@@ -1,18 +1,18 @@
 import math
 import matplotlib.pyplot as plt
 
-from onshapeComm.OnshapeAPI import OnshapeAPI
+from onshapeInterface.OnshapeAPI import OnshapeAPI
 from mathUtil.kinematics import KinematicsToolbox, Unit
 import numpy as np
 import time
 import json
 import ihmcSpine.SpineNames as SpineNames
 
-from onshapeComm.ConfigurationEncoder import KinematicSampleConfigurationEncoder, ValueWithUnit, Units
-from onshapeComm.Keys import Keys
-from onshapeComm.RequestUrlCreator import RequestUrlCreator
-import onshapeComm.Names as Names
-from onshapeComm.JsonParser import JsonToPython
+from onshapeInterface.ConfigurationEncoder import KinematicSampleConfigurationEncoder, ValueWithUnit, Units
+from onshapeInterface.Keys import Keys
+from onshapeInterface.RequestUrlCreator import RequestUrlCreator
+import onshapeInterface.Names as Names
+from onshapeInterface.JsonParser import JsonToPython
 from ihmcSpine import SpineCostEvaluator
 
 
@@ -46,12 +46,6 @@ if __name__ == "__main__":
     requestUrlCreator = RequestUrlCreator(url)
     onshapeAPI = OnshapeAPI(keys, requestUrlCreator)
 
-    # parameters = KinematicSampleConfigurationEncoder()
-    # parameters.addParameter(ValueWithUnit(0.10, Units.RADIAN)) # Crank Angle
-    # parameters.addParameter(ValueWithUnit(0.0550, Units.METER)) # Crank Length
-    # parameters.addParameter(ValueWithUnit(0.30, Units.RADIAN)) # Mounting Angle
-    # parameters.addParameter(ValueWithUnit(0.10, Units.METER)) # Mounting Length
-    # parameters.addParameter(ValueWithUnit(0.02, Units.METER)) # Bore Diameter
     unitsList = [Units.RADIAN,
                  Units.METER,
                  Units.RADIAN,
@@ -63,7 +57,7 @@ if __name__ == "__main__":
                                              0.055, # Crank Length
                                              0.30, # Mounting Angle
                                              0.10, # Mounting Length
-                                             0.20])) # Bore Diameter
+                                             0.02])) # Bore Diameter
     print(parameters.getEncoding())
 
     tic = time.perf_counter()
