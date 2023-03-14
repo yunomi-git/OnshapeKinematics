@@ -12,7 +12,8 @@ from storage.Data import Data
 class DataFromCsv:
     def __init__(self, fileName : str):
         self.numpy_dtype = 'float32'
-
+        if not os.path.isdir(paths.DATA_DIR):
+            os.makedirs(paths.DATA_DIR)
         self.dataInputPath = paths.createPathToCsvDataFile(fileName, isInputs=True)
         self.dataOutputPath = paths.createPathToCsvDataFile(fileName, isInputs=False)
 
