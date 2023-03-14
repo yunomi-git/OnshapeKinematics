@@ -30,6 +30,7 @@ class SpineCostEvaluator:
                                         actuatorExtraLength=self.actuatorLengthExtra,
                                         boreDiameterOverride=True,
                                         debug=False)
+        multiObjCost.print()
         if multiObjCost.constraintsMet:
             cost = 0
             costValues = multiObjCost.objectiveCosts
@@ -69,7 +70,7 @@ def getSpineCostsNd(apiResponse,
 
     if apiResponse is None:
         constraintsViolated = []
-        constraintsViolated.append("Onsh")
+        constraintsViolated.append("Onshape messed up...")
         return Costs.createInvalidMultiObjCost(constraintsViolated)
 
     boreDiameter = 0.020
@@ -142,7 +143,7 @@ def getSpineCostsNd(apiResponse,
         return Costs.createInvalidMultiObjCost(constraintsViolated)
 
 def getBoreDiameter(parameters : np.ndarray):
-    return parameters[4]
+    return parameters[3]
 def getTorques(apiResponse, boreDiameter):
     cylinderArea = math.pi * (boreDiameter/2.0) * (boreDiameter/2.0)
     jacobians = []
