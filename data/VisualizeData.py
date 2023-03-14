@@ -17,4 +17,3 @@ def visualizeData(data : Data):
     for i in range(xDimensions):
         axs2.scatter(range(numData), xData[:, i])
 
-    plt.show()

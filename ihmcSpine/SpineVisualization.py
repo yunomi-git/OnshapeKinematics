@@ -32,4 +32,3 @@ def plotTorques(apiResponse, boreDiameter):
     ax.scatter(angles, outputTorques)
     plt.xlabel("Spine Angle (rad)")
     plt.ylabel("Torques (Nm)")
-    plt.show()

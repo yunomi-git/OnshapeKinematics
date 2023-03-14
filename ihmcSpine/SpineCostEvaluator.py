@@ -99,9 +99,9 @@ def getSpineCostsNd(apiResponse,
         constraintsAreMet = False
         constraintsViolated.append("Min Torque is too low")
 
-    if strokeLength > 0.100:
-        constraintsAreMet = False
-        constraintsViolated.append("Stroke length > 0.1")
+    # if strokeLength > 0.100:
+    #     constraintsAreMet = False
+    #     constraintsViolated.append("Stroke length > 0.1")
 
     if minLength < (actuatorExtraLength + strokeLength):
         constraintsAreMet = False

@@ -1,4 +1,5 @@
 import json
+import matplotlib.pyplot as plt
 
 import torch
 import numpy as np
@@ -51,12 +52,13 @@ spineCostEvaluator = SpineCostEvaluator(weights=weights,
                                         minTorqueConstraint=minTorqueConstraint,
                                         actuatorExtraLength=actuatorExtraLength)
 
-saveName = "ihmcSpine_Reparameterized"
+saveName = "ihmcSpine_ReparameterizedV2"
 
 if __name__ == "__main__":
     unitsList = [Units.RADIAN,
                  Units.METER,
                  Units.RADIAN,
+                 Units.METER,
                  Units.METER]
     onshapeCostEvaluator = spineCostEvaluator.calculateCostFromOnshape
     bayesOptKinematicWrapper = BayesOptOnshapeWrapper(onshapeCostEvaluator=onshapeCostEvaluator,
@@ -69,6 +71,7 @@ if __name__ == "__main__":
     parameterBounds.addBound(0.010, 0.300)              # Stroke Length
     parameterBounds.addBound(0.0, 1.57079633)           # Mounting Angle
     parameterBounds.addBound(0.010, 0.030)              # Bore Diameter
+    parameterBounds.addBound(0.00, 0.100) # Extra Length Actuator
 
     # Load old data
     dataExporter = DataFromCsv(saveName)
@@ -79,10 +82,11 @@ if __name__ == "__main__":
     initialParameter.addParameters(np.array([-0.349066,  # Crank Angle
                                              0.080, # Stroke Length
                                              0.78539, # Mounting Angle
-                                             0.02])) # Bore Diameter
+                                             0.025,# Bore Diameter
+                                             0.001]))
 
     bestParam, bestCost = bayesOptKinematicWrapper.optimize(initialSamples=[initialParameter],
-                                                            numIterations=10,
+                                                            numIterations=20,
                                                             bounds=parameterBounds,
                                                             existingData=data)
     # Save data
@@ -107,5 +111,7 @@ if __name__ == "__main__":
     print("")
 
     visualizeData(bayesOptKinematicWrapper.data)
+    plt.show()
+
 
 
