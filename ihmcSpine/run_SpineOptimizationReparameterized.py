@@ -37,8 +37,8 @@ actuatorExtraLength = 0.063
 weights = {
     SpineNames.MaxWidthCost: -0.2,
     SpineNames.MaxHeightCost: -0.2,
-    SpineNames.MaxForceCost: -0.3,
-    SpineNames.BoreDiameterCost: -0.1
+    SpineNames.MaxForceCost: 0.0,
+    SpineNames.BoreDiameterCost: 0.0
 }
 
 normalization = {
@@ -52,7 +52,7 @@ spineCostEvaluator = SpineCostEvaluator(weights=weights,
                                         minTorqueConstraint=minTorqueConstraint,
                                         actuatorExtraLength=actuatorExtraLength)
 
-saveName = "ihmcSpine_ReparameterizedV2"
+saveName = "ihmcSpine_ReparameterizedV3"
 
 if __name__ == "__main__":
     unitsList = [Units.RADIAN,
@@ -79,14 +79,14 @@ if __name__ == "__main__":
 
 
     initialParameter = KinematicSampleConfigurationEncoder(unitsList=unitsList)
-    initialParameter.addParameters(np.array([-0.349066,  # Crank Angle
-                                             0.080, # Stroke Length
-                                             0.78539, # Mounting Angle
-                                             0.025,# Bore Diameter
+    initialParameter.addParameters(np.array([0.18525,  # Crank Angle
+                                             0.05, # Stroke Length
+                                             0.18525, # Mounting Angle
+                                             0.02,# Bore Diameter
                                              0.001]))
 
     bestParam, bestCost = bayesOptKinematicWrapper.optimize(initialSamples=[initialParameter],
-                                                            numIterations=20,
+                                                            numIterations=40,
                                                             bounds=parameterBounds,
                                                             existingData=data)
     # Save data

@@ -34,11 +34,14 @@ if __name__ == "__main__":
                  Units.METER,
                  Units.METER]
 
-    numpyParameters = np.array([-0.349066,  # Crank Angle
-                                 0.080, # Stroke Length
-                                 0.78539, # Mounting Angle
-                                 0.02, # Bore Diameter
-                                 0.00])
+    # numpyParameters = np.array([0.18525,  # Crank Angle
+    #                                     0.05, # Stroke Length
+    #                                     0.18525, # Mounting Angle
+    #                                     0.02,# Bore Diameter
+    #                                     0.001]) # Original
+    # numpyParameters = np.array([0.3024, 0.0358, 0.2446, 0.0289, 0.0000]) # A
+    numpyParameters = np.array([0.157972008, 0.038880095, 0.0, 0.028061992, 0.060228433])  # B
+
     parameters = KinematicSampleConfigurationEncoder(unitsList=unitsList, numpyParameters=numpyParameters)
     print(parameters.getEncoding())
 
@@ -46,7 +49,7 @@ if __name__ == "__main__":
     apiResponse = onshapeAPI.doAPIRequestForJson(parameters, Names.SAMPLES_ATTRIBUTE_NAME)
     toc = time.perf_counter()
 
-    print(json.dumps(apiResponse, indent=4))
+    # print(json.dumps(apiResponse, indent=4))
     print("time total " + str(toc - tic))
 
     minTorqueConstraint = 150.0
@@ -61,10 +64,10 @@ if __name__ == "__main__":
     costs.print()
 
     weights = {
-        SpineNames.MaxWidthCost : 0.2,
-        SpineNames.MaxHeightCost : 0.2,
-        SpineNames.MaxForceCost : 0.3,
-        SpineNames.BoreDiameterCost : 0.1
+        SpineNames.MaxWidthCost: -0.2,
+        SpineNames.MaxHeightCost: -0.2,
+        SpineNames.MaxForceCost: 0.0,
+        SpineNames.BoreDiameterCost: 0.0
     }
 
     normalization = {
