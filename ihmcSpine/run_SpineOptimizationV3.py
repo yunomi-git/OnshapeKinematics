@@ -25,7 +25,7 @@ from data.VisualizeData import visualizeData
 access = 'I6M5WhNnlnrPeGGFucyKwlwa'
 secret = 'W9qbMjKaYzfBRbg8MPoAuP7sDICkLhlByVYLAT8cehiF4Gbv'
 keys = Keys(access, secret)
-url = "https://cad.onshape.com/documents/c6a60909a9693027fe5bb9e9/w/50fafe234fce490c861a55b4/e/df9e8706f34adbcdffec4f2c"
+url = "https://cad.onshape.com/documents/07c87d36d9881deeeea3d0c5/w/a5fc87e91bbbedea94bb5b58/e/aabb76791b6523a1b2d9dcbd"
 
 requestUrlCreator = RequestUrlCreator(url)
 onshapeAPI = OnshapeAPI(keys, requestUrlCreator)
