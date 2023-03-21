@@ -67,7 +67,6 @@ if __name__ == "__main__":
                                                       unitsList=unitsList)
 
     parameterBounds = ParameterBounds()
-    parameterBounds.addBound(-1.57079633, 1.57079633)   # Crank Angle
     parameterBounds.addBound(0.010, 0.300)              # Stroke Length
     parameterBounds.addBound(0.0, 1.57079633)           # Mounting Angle
     parameterBounds.addBound(0.010, 0.030)              # Bore Diameter
@@ -79,11 +78,10 @@ if __name__ == "__main__":
 
 
     initialParameter = KinematicSampleConfigurationEncoder(unitsList=unitsList)
-    initialParameter.addParameters(np.array([0.18525,  # Crank Angle
-                                             0.05, # Stroke Length
-                                             0.18525, # Mounting Angle
-                                             0.02,# Bore Diameter
-                                             0.001]))
+    initialParameter.addParameters(np.array([0.038880095, # Stroke Length
+                                             0.3, # Mounting Angle
+                                             0.028061992,# Bore Diameter
+                                             0.060228433]))
 
     bestParam, bestCost = bayesOptKinematicWrapper.optimize(initialSamples=[initialParameter],
                                                             numIterations=40,

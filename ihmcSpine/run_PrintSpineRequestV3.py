@@ -40,7 +40,7 @@ if __name__ == "__main__":
     #                                     0.001]) # Original
     # numpyParameters = np.array([0.0358, 0.2446, 0.0289, 0.0000]) # A
     # numpyParameters = np.array([0.038880095, 0.0, 0.028061992, 0.060228433])  # B
-    numpyParameters = np.array([0.100, 0.436332, 0.020, 0.001])
+    numpyParameters = np.array([0.038880095, 0.3, 0.028061992, 0.060228433])
 
     parameters = KinematicSampleConfigurationEncoder(unitsList=unitsList, numpyParameters=numpyParameters)
     print(parameters.getEncoding())
