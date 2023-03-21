@@ -23,7 +23,7 @@ if __name__ == "__main__":
     access = 'I6M5WhNnlnrPeGGFucyKwlwa'
     secret = 'W9qbMjKaYzfBRbg8MPoAuP7sDICkLhlByVYLAT8cehiF4Gbv'
     keys = Keys(access, secret)
-    url = "https://cad.onshape.com/documents/c6a60909a9693027fe5bb9e9/w/50fafe234fce490c861a55b4/e/df9e8706f34adbcdffec4f2c"
+    url = "https://cad.onshape.com/documents/07c87d36d9881deeeea3d0c5/w/a5fc87e91bbbedea94bb5b58/e/c892c5d8fe456e05056f8d7c"
 
     requestUrlCreator = RequestUrlCreator(url)
     onshapeAPI = OnshapeAPI(keys, requestUrlCreator)
@@ -49,7 +49,7 @@ if __name__ == "__main__":
     apiResponse = onshapeAPI.doAPIRequestForJson(parameters, Names.SAMPLES_ATTRIBUTE_NAME)
     toc = time.perf_counter()
 
-    # print(json.dumps(apiResponse, indent=4))
+    print(json.dumps(apiResponse, indent=4))
     print("time total " + str(toc - tic))
 
     minTorqueConstraint = 150.0

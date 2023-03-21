@@ -5,6 +5,7 @@ MinActuatorLength="MinActuatorLength"
 CrankWidth="CrankWidth"
 MountingWidth="MountingWidth"
 CrankHeight="CrankHeight"
+CrankLength="CrankLength"
 
 MinROM = "MinROM"
 MaxROM = "MaxROM"

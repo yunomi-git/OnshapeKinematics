@@ -169,11 +169,11 @@ def forcesToReachMinTorque(apiResponse, desiredTorque):
     return minimumForces
 
 def getMaxCrankWidth(apiResponse):
-    return apiResponse[SpineNames.MaxCrankWidth][Names.KinematicAuxMeasurementInfo][SpineNames.CrankWidth]
+    return apiResponse[SpineNames.MaxROM][Names.KinematicAuxMeasurementInfo][SpineNames.CrankLength]
 def getMaxCrankHeight(apiResponse):
     return apiResponse[SpineNames.MaxCrankHeight][Names.KinematicAuxMeasurementInfo][SpineNames.CrankHeight]
 def getMountingWidth(apiResponse):
-    return apiResponse[SpineNames.MaxCrankWidth][Names.KinematicAuxMeasurementInfo][SpineNames.MountingWidth]
+    return apiResponse[SpineNames.MaxROM][Names.KinematicAuxMeasurementInfo][SpineNames.MountingWidth]
 
 def getMinActuatorLength(apiResponse):
     return apiResponse[SpineNames.MinROM][Names.KINEMATICS_ATTRIBUTE_NAME][0]
