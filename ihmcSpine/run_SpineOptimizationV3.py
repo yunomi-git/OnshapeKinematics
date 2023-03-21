@@ -37,7 +37,7 @@ actuatorExtraLength = 0.063
 weights = {
     SpineNames.MaxWidthCost: -0.2,
     SpineNames.MaxHeightCost: -0.2,
-    SpineNames.MaxForceCost: 0.0,
+    SpineNames.MaxForceCost: -0.05,
     SpineNames.BoreDiameterCost: 0.0
 }
 
@@ -52,11 +52,10 @@ spineCostEvaluator = SpineCostEvaluator(weights=weights,
                                         minTorqueConstraint=minTorqueConstraint,
                                         actuatorExtraLength=actuatorExtraLength)
 
-saveName = "ihmcSpine_ReparameterizedV3"
+saveName = "ihmcSpine_V3Parameters"
 
 if __name__ == "__main__":
-    unitsList = [Units.RADIAN,
-                 Units.METER,
+    unitsList = [Units.METER,
                  Units.RADIAN,
                  Units.METER,
                  Units.METER]
@@ -69,8 +68,9 @@ if __name__ == "__main__":
     parameterBounds = ParameterBounds()
     parameterBounds.addBound(0.010, 0.300)              # Stroke Length
     parameterBounds.addBound(0.0, 1.57079633)           # Mounting Angle
+    parameterBounds.addBound(0.00, 0.100)  # Extra Length Actuator
     parameterBounds.addBound(0.010, 0.030)              # Bore Diameter
-    parameterBounds.addBound(0.00, 0.100) # Extra Length Actuator
+
 
     # Load old data
     dataExporter = DataFromCsv(saveName)
@@ -78,10 +78,11 @@ if __name__ == "__main__":
 
 
     initialParameter = KinematicSampleConfigurationEncoder(unitsList=unitsList)
-    initialParameter.addParameters(np.array([0.038880095, # Stroke Length
-                                             0.3, # Mounting Angle
-                                             0.028061992,# Bore Diameter
-                                             0.060228433]))
+    initialParameter.addParameters(np.array([0.05,  # Stroke Length
+                                            0.18525,  # Mounting Angle
+                                            0.001, # Extra Actuator
+                                            0.02  # Bore Diameter
+                                            ]))
 
     bestParam, bestCost = bayesOptKinematicWrapper.optimize(initialSamples=[initialParameter],
                                                             numIterations=40,

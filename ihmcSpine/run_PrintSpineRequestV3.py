@@ -40,7 +40,13 @@ if __name__ == "__main__":
     #                                     0.001]) # Original
     # numpyParameters = np.array([0.0358, 0.2446, 0.0289, 0.0000]) # A
     # numpyParameters = np.array([0.038880095, 0.0, 0.028061992, 0.060228433])  # B
-    numpyParameters = np.array([0.038880095, 0.3, 0.028061992, 0.060228433])
+    # numpyParameters = np.array([0.038880095, 0.3, 0.028061992, 0.060228433])
+    # numpyParameters = np.array([0.0216, 0.0000, 0.0300, 0.0634])
+    numpyParameters = np.array([0.05,  # Stroke Length
+                                0.18525,  # Mounting Angle
+                                0.001, # Extra Actuator
+                                0.02  # Bore Diameter
+                                ])  # Original
 
     parameters = KinematicSampleConfigurationEncoder(unitsList=unitsList, numpyParameters=numpyParameters)
     print(parameters.getEncoding())
